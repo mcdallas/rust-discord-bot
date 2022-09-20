@@ -1,4 +1,4 @@
-use crate::interaction::{InteractionResponse, Interaction};
+use crate::interaction::{InteractionResponse, Interaction, Verification};
 use crate::http::HttpError;
 use crate::error::Error;
 use crate::verification::verify_signature;
@@ -45,12 +45,19 @@ impl App {
 
         worker::console_log!("Request body : {}", body);
         
-        let interaction =
-        serde_json::from_str::<Interaction>(&body).map_err(Error::JsonFailed)?;
-        worker::console_log!{"Request parsed : {}", serde_json::to_string_pretty(&interaction).unwrap()};
-        let response = interaction.perform(&mut self.ctx).await?;
-        
-        Ok(response)
+        match serde_json::from_str::<Interaction>(&body) {
+            Ok(interaction) => {
+                worker::console_log! {"Request parsed : {}", serde_json::to_string_pretty(&interaction).unwrap()};
+                let response = interaction.perform(&mut self.ctx).await?;
+                return Ok(response);
+            }
+            Err(_) => {
+                let verification_request =
+                    serde_json::from_str::<Verification>(&body).map_err(Error::JsonFailed)?;
+                let response = verification_request.handle_ping();
+                return Ok(response);
+            }
+        }
 
     }
 

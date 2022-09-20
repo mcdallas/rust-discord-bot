@@ -98,6 +98,27 @@ impl Interaction {
     }
 }
 
+#[derive(Deserialize, Serialize)]
+pub(crate) struct User {
+    avatar: String,
+    avatar_decoration: Option<String>,
+    discriminator: String,
+    id: String,
+    public_flags: u32,
+    username: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub(crate) struct Verification {
+    #[serde(rename = "type")]
+    ty: InteractionType,
+    application_id: String,
+    id: String,
+    token: String,
+    user: User,
+    version: u8,
+}
+
 #[derive(Serialize)]
 pub struct InteractionResponse {
     #[serde(rename = "type")]
@@ -163,5 +184,14 @@ impl Interaction {
             InteractionType::ApplicationCommandAutoComplete => self.handle_autocomplete(ctx).await.map_err(Error::InteractionFailed),
             _ => Err(Error::InvalidPayload("Not implemented".into()))
         }
+    }
+}
+
+impl Verification {
+    pub(crate) fn handle_ping(&self) -> InteractionResponse {
+        return InteractionResponse {
+            ty: InteractionResponseType::Pong,
+            data: None,
+        };
     }
 }
