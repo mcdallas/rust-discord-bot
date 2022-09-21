@@ -56,8 +56,8 @@ pub(crate) struct Interaction {
     ty: InteractionType,
     data: Option<ApplicationCommandInteractionData>,
     token: String,
-    guild_id: String,
-    channel_id: String
+    guild_id: Option<String>,
+    channel_id: Option<String>
 }
 
 #[derive(Serialize_repr, Deserialize_repr, Clone)]
