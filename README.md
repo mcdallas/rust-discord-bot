@@ -9,15 +9,15 @@ Cloudflare's [edge infrastructure](https://www.cloudflare.com/network/).
 
 ## Setup
 
-1. Signup for a Cloudflare account, in the dashboard setup a subdomain (i.e <mydomain>.workers.dev)
+1. Signup for a Cloudflare account, in the dashboard setup a subdomain (i.e `<mydomain>.workers.dev`)
 2. Setup a worker project named `bot` (i.e `bot.<mydomain>.workers.dev`) or pick your own name and update wrangler.toml
 3. Install [wrangler CLI](https://github.com/cloudflare/wrangler) with `cargo install wrangler` and authenticate with cloudflare via `wrangler config`
 4. Create a new discord app at https://discord.com/developers/applications and copy your token/application_id/public_key
-5. Pass those secrets yo your bot with `wrangler secret put DISCORD_TOKEN`, `wrangler secret put DISCORD_PUBLIC_KEY`, `wrangler secret put DISCORD_APPLICATION_ID`
+5. Pass those secrets to your bot with `wrangler secret put DISCORD_TOKEN`, `wrangler secret put DISCORD_PUBLIC_KEY`, `wrangler secret put DISCORD_APPLICATION_ID`
 6. [Add bot permissions](https://discord.com/developers/docs/tutorials/hosting-on-cloudflare-workers#adding-bot-permissions) and grab your Oauth url to invite the bot to your server
 7. Publish the demo app with `wrangler publish`. The template bot contains a single hello command with a dummy autocomplete argument.
 8. Put your bot domain `https://bot.<mydomain>.workers.dev` in the `INTERACTIONS ENDPOINT URL` in your discord app page from step 4
-9. Each time you add a new command on your bot you need to register it with the discord api. To do that simply `curl -X POST http://bot.<mydomain>.workers.dev/register`
+9. After initial deployment and each time you add a new command on your bot you need to register it with the discord api. To do that simply `curl -X POST http://bot.<mydomain>.workers.dev/register`
 
 You should now be able to run the `/hello` command on discord 
 
