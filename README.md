@@ -42,7 +42,7 @@ pub(crate) struct Ping {}
 
 #[async_trait(?Send)]
 impl Command for Ping {
-    async fn respond(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<InteractionApplicationCommandCallbackData, InteractionError>{
+    async fn respond(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<InteractionApplicationCommandCallbackData, InteractionError> {
         Ok(InteractionApplicationCommandCallbackData {
             content: Some("Pong".to_string()),
             choices: None,
@@ -63,7 +63,7 @@ impl Command for Ping {
         None
     }
 
-    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> 
+    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
         None
     }
 
