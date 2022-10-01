@@ -25,7 +25,7 @@ pub(crate) trait Command {
         unimplemented!()
     }
 
-    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<InteractionApplicationCommandCallbackData, InteractionError> {
+    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
         // If your command supports autocomplete implement the logic here
         unimplemented!()
     }

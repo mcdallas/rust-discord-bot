@@ -148,7 +148,7 @@ impl Interaction {
 
                 return Ok(InteractionResponse {
                     ty: InteractionResponseType::AutoCompleteResult,
-                    data: Some(response),
+                    data: response,
                 })
 
             }
