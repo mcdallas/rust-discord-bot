@@ -91,10 +91,10 @@ pub(crate) struct ApplicationCommandOptionChoice {
 
 impl Interaction {
     fn data(&self) -> Result<&ApplicationCommandInteractionData, Error> {
-        Ok(self
+        self
             .data
             .as_ref()
-            .ok_or_else(|| Error::InvalidPayload("data not found".to_string()))?)
+            .ok_or_else(|| Error::InvalidPayload("data not found".to_string()))
     }
 }
 
@@ -109,7 +109,7 @@ impl Interaction {
 
 
     pub(crate) fn handle_ping(&self) -> InteractionResponse {
-        return InteractionResponse {
+        InteractionResponse {
             ty: InteractionResponseType::Pong,
             data: None,
         }
@@ -122,7 +122,7 @@ impl Interaction {
         let commands = init_commands();
 
         for boxed in commands.iter() {
-            let com = &*boxed;
+            let com = boxed;
             if com.name() == data.name {
                 let response = com.respond(&data.options, ctx).await?;
 
@@ -142,7 +142,7 @@ impl Interaction {
         let commands = init_commands();
 
         for boxed in commands.iter() {
-            let com = &*boxed;
+            let com = boxed;
             if com.name() == data.name {
                 let response = com.autocomplete(&data.options, ctx).await?;
 

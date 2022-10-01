@@ -26,7 +26,7 @@ pub struct HttpError {
 
 impl fmt::Display for HttpError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "An HTTP error occurred: {}", self.reason.to_string())
+        write!(f, "An HTTP error occurred: {}", self.reason)
     }
 }
 

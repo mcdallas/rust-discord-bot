@@ -43,13 +43,13 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
              match app.handle_request().await {
                 Ok(result) => {
                     worker::console_log!("Response : {}", serde_json::to_string_pretty(&result).unwrap());
-                    return Response::from_json(&result) 
+                    Response::from_json(&result) 
                 },
                 Err(httperr) => {
                     worker::console_log!("Error response : {}", httperr.to_string());
-                    return Response::error(httperr.to_string(), httperr.status as u16)
+                    Response::error(httperr.to_string(), httperr.status as u16)
                 }
-            };
+            }
 
         })
         .post_async("/register", |_, ctx|  async move {
@@ -57,7 +57,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
 
             let mut to_register: Vec<command::RegisteredCommand> = Vec::new();
             for boxed in commands.iter() {
-                let com = &*boxed;
+                let com = boxed;
                 let reg = command::RegisteredCommand{name: com.name(), description: com.description(), options: com.options()};
                 to_register.push(reg);
             }
@@ -72,7 +72,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
             
             let response = client.put(url).body(serialized).header("Authorization", format!("Bot {}", token)).header("Content-Type", "application/json").send().await.unwrap().text().await.unwrap();
             worker::console_log!{"Registration response: {}", response};
-            return Response::ok(&response);
+            Response::ok(&response)
         })
         .run(req, env)
         .await

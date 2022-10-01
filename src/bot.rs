@@ -17,14 +17,14 @@ impl App {
     }
 
     fn var(&self, key: &str) -> Result<String, Error> {
-        return match self.ctx.var(key) {
+        match self.ctx.var(key) {
             Ok(var) =>  Ok(var.to_string()),
             Err(_) =>  Err(Error::EnvironmentVariableNotFound(key.to_string()))
         }
 
     }
     fn header(&self, key:&str) -> Result<String, Error> {
-        return match  self.req.headers().get(key) {
+        match  self.req.headers().get(key) {
             Ok(val) => val.ok_or_else(|| Error::HeaderNotFound(key.to_string())),
             Err(_) => Err(Error::HeaderNotFound(key.to_string()))
         }
@@ -37,7 +37,7 @@ impl App {
 
         let body = self.req.text().await.map_err(|_| Error::InvalidPayload("".into()))?;
         verify_signature(&pubkey, &signature, &timestamp, &body).map_err(Error::VerificationFailed)?;
-        return Ok(body)
+        Ok(body)
     }
 
     pub async fn handle_request(&mut self) -> Result<InteractionResponse, HttpError> {
