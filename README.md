@@ -30,10 +30,10 @@ To add a new command simply implement the `Command` trait. For example to add a 
 
 ``` rust
 use crate::interaction::{
-    InteractionApplicationCommandCallbackData, ApplicationCommandOption, ApplicationCommandOptionChoice, ApplicationCommandInteractionDataOption, ApplicationCommandOptionType
+    InteractionApplicationCommandCallbackData, ApplicationCommandOption, ApplicationCommandOptionChoice, ApplicationCommandOptionType
 };
 use crate::error::InteractionError;
-use crate::command::Command;
+use crate::command::{Command, CommandInput};
 
 use async_trait::async_trait;
 
@@ -42,7 +42,7 @@ pub(crate) struct Ping {}
 
 #[async_trait(?Send)]
 impl Command for Ping {
-    async fn respond(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<InteractionApplicationCommandCallbackData, InteractionError> {
+    async fn respond(&self, _input: &CommandInput) -> Result<InteractionApplicationCommandCallbackData, InteractionError> {
         Ok(InteractionApplicationCommandCallbackData {
             content: Some("Pong".to_string()),
             choices: None,
@@ -63,7 +63,7 @@ impl Command for Ping {
         None
     }
 
-    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
+    async fn autocomplete(&self, _input: &CommandInput) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
         None
     }
 
@@ -82,12 +82,11 @@ pub(crate) fn init_commands() -> Vec<Box<dyn Command + Sync>> {
 4. publish your package with `wrangler publish`
 5. register your new command with discord with `curl -X POST http://bot.<mydomain>.workers.dev/register`
 
-You can store and access state using the `ctx` context object passed to the `respond` and `autocomplete` methods, for example:
+You can store and access state using the `input` context object passed to the `respond` and `autocomplete` methods, for example:
 
 ``` rust
-let kv = ctx.kv("my_namespace")?;  // the namespace must be first registered on cloudflare dashboard
-let my_val =  kv.get("my_key").text().await?;
-kv.put("foo", "bar")?.execute().await?;
+let my_val = input.kv_get("my_namespace", "my_key").await?; // the namespace must be first registered on cloudflare dashboard
+input.kv_put("my_namespace", "foo", "bar").await?;
 
 ```
 
