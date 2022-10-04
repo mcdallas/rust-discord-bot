@@ -1,8 +1,8 @@
 use crate::interaction::{
-    InteractionApplicationCommandCallbackData, ApplicationCommandOption, ApplicationCommandOptionChoice, ApplicationCommandInteractionDataOption, ApplicationCommandOptionType
+    InteractionApplicationCommandCallbackData, ApplicationCommandOption, ApplicationCommandOptionChoice, ApplicationCommandOptionType
 };
 use crate::error::InteractionError;
-use crate::command::Command;
+use crate::command::{Command, CommandInput};
 
 use async_trait::async_trait;
 
@@ -11,7 +11,7 @@ pub(crate) struct Hello {}
 
 #[async_trait(?Send)]
 impl Command for Hello {
-    async fn respond(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<InteractionApplicationCommandCallbackData, InteractionError>{
+    async fn respond(&self, _input: &CommandInput) -> Result<InteractionApplicationCommandCallbackData, InteractionError>{
         Ok(InteractionApplicationCommandCallbackData {
             content: Some("Hello, world!".to_string()),
             choices: None,
@@ -38,7 +38,7 @@ impl Command for Hello {
         }])
     }
 
-    async fn autocomplete(&self, _options: &Option<Vec<ApplicationCommandInteractionDataOption>>, _ctx: &mut worker::RouteContext<()>) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
+    async fn autocomplete(&self,  _input: &CommandInput) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
         Ok(Some(InteractionApplicationCommandCallbackData {
             content: None,
             embeds: None,

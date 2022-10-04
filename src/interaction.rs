@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-use crate::command::init_commands;
+use crate::command::{init_commands, CommandInput};
 use crate::error::{Error, InteractionError};
 use crate::embed::Embed;
 
@@ -149,10 +149,19 @@ impl Interaction {
         let data = self.data().map_err(|_| InteractionError::GenericError())?;
         let commands = init_commands();
 
+        let command_input = CommandInput {
+            options: data.options.clone(),
+            guild_id: self.guild_id.clone(),
+            channel_id: self.channel_id.clone(),
+            user: self.user.clone(),
+            member: self.member.clone(),
+            ctx: ctx
+        };
+
         for boxed in commands.iter() {
             let com = boxed;
             if com.name() == data.name {
-                let response = com.respond(&data.options, ctx).await?;
+                let response = com.respond(&command_input).await?;
 
                 return Ok(InteractionResponse {
                     ty: InteractionResponseType::ChannelMessageWithSource,
@@ -169,10 +178,19 @@ impl Interaction {
         let data = self.data().map_err(|_| InteractionError::GenericError())?;
         let commands = init_commands();
 
+        let command_input = CommandInput {
+            options: data.options.clone(),
+            guild_id: self.guild_id.clone(),
+            channel_id: self.channel_id.clone(),
+            user: self.user.clone(),
+            member: self.member.clone(),
+            ctx: ctx
+        };
+
         for boxed in commands.iter() {
             let com = boxed;
             if com.name() == data.name {
-                let response = com.autocomplete(&data.options, ctx).await?;
+                let response = com.autocomplete(&command_input).await?;
 
                 return Ok(InteractionResponse {
                     ty: InteractionResponseType::AutoCompleteResult,
