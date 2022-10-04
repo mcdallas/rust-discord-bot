@@ -50,6 +50,32 @@ pub(crate) struct InteractionApplicationCommandCallbackData {
     pub(crate) embeds: Option<Vec<Embed>>
 }
 
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub(crate) struct User {
+    id: String,
+    username: String,
+    discriminator: String,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub(crate) struct Member {
+    user: Option<User>,
+    nick: Option<String>,
+    permissions: Option<String>
+}
+
+impl Member {
+    pub fn is_admin(&self) -> bool {
+        match &self.permissions {
+            Some(permissions) => {
+                let num = permissions.parse::<u64>().unwrap_or(0);
+                num & 8 == 8
+            },
+            None => false
+        }
+    }
+}
+
 #[derive(Deserialize, Serialize)]
 pub(crate) struct Interaction {
     #[serde(rename = "type")]
@@ -57,7 +83,9 @@ pub(crate) struct Interaction {
     data: Option<ApplicationCommandInteractionData>,
     token: String,
     guild_id: Option<String>,
-    channel_id: Option<String>
+    channel_id: Option<String>,
+    user: Option<User>,
+    member: Option<Member>,
 }
 
 #[derive(Serialize_repr, Deserialize_repr, Clone)]
