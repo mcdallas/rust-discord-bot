@@ -16,7 +16,7 @@ pub(crate) struct CommandInput<'a> {
 
 #[allow(dead_code)]
 impl CommandInput<'_> {
-    pub fn get_option(&self, name: &str) -> Option<&String> {
+    pub fn get_option(&self, name: &str) -> Option<&str> {
         match &self.options {
             Some(options) => {
                 for option in options {

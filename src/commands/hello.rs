@@ -12,8 +12,10 @@ pub(crate) struct Hello {}
 #[async_trait(?Send)]
 impl Command for Hello {
     async fn respond(&self, _input: &CommandInput) -> Result<InteractionApplicationCommandCallbackData, InteractionError>{
+        let name = _input.get_option("name").unwrap_or("World");
+        
         Ok(InteractionApplicationCommandCallbackData {
-            content: Some("Hello, world!".to_string()),
+            content: Some(format!("Hello, {}!", name)),
             choices: None,
             embeds: None
         })
@@ -29,10 +31,10 @@ impl Command for Hello {
 
     fn options(&self) -> Option<Vec<ApplicationCommandOption>> {
         Some(vec![ApplicationCommandOption{
-            name: "arg".into(), 
+            name: "name".into(), 
             autocomplete: Some(true), 
-            description: "The First Argument".into(), 
-            required: Some(true), 
+            description: "Your name".into(), 
+            required: Some(false), 
             ty: ApplicationCommandOptionType::String,
             choices: None,
         }])
@@ -42,13 +44,19 @@ impl Command for Hello {
         Ok(Some(InteractionApplicationCommandCallbackData {
             content: None,
             embeds: None,
-            choices: Some(vec!(ApplicationCommandOptionChoice{
-                name: "option 1".into(),
-                value: "test".into(),
-
-            }))
+            choices: Some(vec![ApplicationCommandOptionChoice{
+                name: "Alice".into(),
+                value: "Alice".into(),
+            },
+            ApplicationCommandOptionChoice{
+                name: "Bob".into(),
+                value: "Bob".into(),
+            },
+            ApplicationCommandOptionChoice{
+                name: "Charlie".into(),
+                value: "Charlie".into(),
+            }])
         }))
-
     }
 }
 
