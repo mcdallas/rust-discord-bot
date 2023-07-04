@@ -111,7 +111,9 @@ you can use `ngrok` to tunnel traffic into your local machine, more info [here](
 
 You can create an a action to automatically deploy your worker & register your commands on each push to main.
 
-Create a repository secret with your `CF_API_TOKEN` and add the following to your workflow file:
+Create a Cloudflare API token and use the `Edit Cloudflare Workers` template.
+
+Then, create a repository secret with your API Token under `CF_API_TOKEN` and add the following inside `.github/workflows/deploy.yml`:
 
 ``` yaml
 name: Deploy to Cloudflare Workers
