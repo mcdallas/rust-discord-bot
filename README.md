@@ -17,10 +17,9 @@ Cloudflare's [edge infrastructure](https://www.cloudflare.com/network/).
 6. [Add bot permissions](https://discord.com/developers/docs/tutorials/hosting-on-cloudflare-workers#adding-bot-permissions) and grab your Oauth url to invite the bot to your server
 7. Publish the demo app with `wrangler publish`. The template bot contains a single hello command with a dummy autocomplete argument.
 8. Put your bot domain `https://bot.<mydomain>.workers.dev` in the `INTERACTIONS ENDPOINT URL` in your discord app page from step 4
-9. After initial deployment and each time you add a new command on your bot you need to register it with the discord api. To do that simply `curl -X POST http://bot.<mydomain>.workers.dev/register`
+9. After initial deployment and each time you add a new command on your bot you need to register it with the discord api. To do that simply `curl -X POST https://bot.<mydomain>.workers.dev/register`
 
-You should now be able to run the `/hello` command on discord 
-
+You should now be able to run the `/hello` command on discord
 
 ## Adding new commands
 
@@ -66,7 +65,7 @@ impl Command for Ping {
     async fn autocomplete(&self, _input: &CommandInput) -> Result<Option<InteractionApplicationCommandCallbackData>, InteractionError> {
         None
     }
-
+}
 ```
 2. add your new module in src/commands/mod.rs
 3. Register your command in  `init_commands` in src/command.rs 
@@ -107,6 +106,37 @@ wrangler publish
 ```
 
 you can use `ngrok` to tunnel traffic into your local machine, more info [here](https://discord.com/developers/docs/tutorials/hosting-on-cloudflare-workers#setting-up-ngrok)
+
+## Actions Deployments
+
+You can create an a action to automatically deploy your worker & register your commands on each push to main.
+
+Create a repository secret with your `CF_API_TOKEN` and add the following to your workflow file:
+
+``` yaml
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+            - uses: actions/checkout@v3
+
+            - name: Deploy to Cloudflare Workers
+              env:
+                  CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+              run: npm i -g wrangler && npx wrangler publish
+
+            - name: Curl the worker
+              run: curl -X POST https://<your_worker_domain>/register
+```
+
 
 ## WebAssembly
 
